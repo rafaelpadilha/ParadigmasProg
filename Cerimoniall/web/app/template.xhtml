@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Cerimoniall</title>
+    </h:head>
+    <h:body style="background-color: darkblue">
+        <div align="center"><h1 style="color: white">Cerimoniall</h1>
+            <h:form>
+                <p:menubar>
+                    <p:menuitem value="Home" url="index.jsf"></p:menuitem>
+                    <p:submenu label="Opções">
+                        <p:menuitem value="Sair" action="#{loginController.logout()}"></p:menuitem>
+                    </p:submenu>
+                </p:menubar>
+                <div style="height: 10px"></div>
+                <p:messages showDetail="true" closable="true">
+                    <p:autoUpdate/>
+                </p:messages>
+                <div style="height: 10px"></div>
+            </h:form>
+            <ui:insert></ui:insert>
+        </div>
+    </h:body>
+</html>
+
+
