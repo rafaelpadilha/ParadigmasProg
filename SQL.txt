@@ -1,0 +1,126 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+-- -----------------------------------------------------
+-- Schema cerimonial
+-- -----------------------------------------------------
+DROP SCHEMA IF EXISTS `cerimonial` ;
+
+-- -----------------------------------------------------
+-- Schema cerimonial
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `cerimonial` DEFAULT CHARACTER SET utf8 ;
+USE `cerimonial` ;
+
+-- -----------------------------------------------------
+-- Table `cerimonial`.`PESSOA`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `cerimonial`.`PESSOA` (
+  `SEQ_PESSOA` INT NOT NULL AUTO_INCREMENT,
+  `NOM_PESSOA` VARCHAR(45) NOT NULL,
+  `NUM_CPF` VARCHAR(45) NOT NULL,
+  `DSC_EMAIL` VARCHAR(45) NOT NULL,
+  `FLG_ATIVO` VARCHAR(1) NOT NULL DEFAULT 'S',
+  `DSC_SENHA` VARCHAR(45) NOT NULL DEFAULT '1234',
+  `FLG_ORGANIZADOR` VARCHAR(1) NOT NULL DEFAULT 'N',
+  `NUM_TELEFONE` VARCHAR(45) NULL,
+  UNIQUE INDEX `NUM_CPF_UNIQUE` (`NUM_CPF` ASC),
+  UNIQUE INDEX `DSC_EMAIL_UNIQUE` (`DSC_EMAIL` ASC),
+  PRIMARY KEY (`SEQ_PESSOA`));
+
+-- -----------------------------------------------------
+-- Table `cerimonial`.`EVENTO`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `cerimonial`.`EVENTO` (
+  `SEQ_EVENTO` INT NOT NULL AUTO_INCREMENT,
+  `NOM_EVENTO` VARCHAR(45) NOT NULL,
+  `DSC_LOCAL` VARCHAR(60) NOT NULL,
+  `DSC_EVENTO` VARCHAR(200) NULL,
+  `SEQ_PESSOA_ENCARREGADA` INT NOT NULL,
+  `FLG_ATIVO` VARCHAR(45) NOT NULL DEFAULT 'S',
+  `DAT_EVENTO` DATETIME NOT NULL,
+  PRIMARY KEY (`SEQ_EVENTO`),
+  INDEX `fk_EVENTO_PESSOA_idx` (`SEQ_PESSOA_ENCARREGADA` ASC),
+  CONSTRAINT `fk_EVENTO_PESSOA`
+    FOREIGN KEY (`SEQ_PESSOA_ENCARREGADA`)
+    REFERENCES `cerimonial`.`PESSOA` (`SEQ_PESSOA`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+-- -----------------------------------------------------
+-- Table `cerimonial`.`TIPO_CONVIDADO`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `cerimonial`.`TIPO_CONVIDADO` (
+  `SEQ_TIPO_CONVIDADO` INT NOT NULL AUTO_INCREMENT,
+  `DSC_TIPO_CONVIDADO` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`SEQ_TIPO_CONVIDADO`));
+
+
+-- -----------------------------------------------------
+-- Table `cerimonial`.`CONVIDADO_EVENTO`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `cerimonial`.`CONVIDADO_EVENTO` (
+  `SEQ_CONVIDADO_EVENTO` INT NOT NULL AUTO_INCREMENT,
+  `SEQ_PESSOA` INT NOT NULL,
+  `SEQ_EVENTO` INT NOT NULL,
+  `FLG_CONFIRMADO` VARCHAR(1) NOT NULL DEFAULT 'N',
+  `DAT_CONVITE_EMITIDO` DATETIME NULL,
+  `FLG_ATIVO` VARCHAR(1) NOT NULL,
+  `SEQ_TIPO_CONVIDADO` INT NOT NULL,
+  PRIMARY KEY (`SEQ_CONVIDADO_EVENTO`),
+  INDEX `fk_CONVIDADO_EVENTO_PESSOA1_idx` (`SEQ_PESSOA` ASC),
+  INDEX `fk_CONVIDADO_EVENTO_EVENTO1_idx` (`SEQ_EVENTO` ASC),
+  INDEX `fk_CONVIDADO_EVENTO_TIPO_CONVIDADO1_idx` (`SEQ_TIPO_CONVIDADO` ASC),
+  CONSTRAINT `fk_CONVIDADO_EVENTO_PESSOA1`
+    FOREIGN KEY (`SEQ_PESSOA`)
+    REFERENCES `cerimonial`.`PESSOA` (`SEQ_PESSOA`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_CONVIDADO_EVENTO_EVENTO1`
+    FOREIGN KEY (`SEQ_EVENTO`)
+    REFERENCES `cerimonial`.`EVENTO` (`SEQ_EVENTO`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_CONVIDADO_EVENTO_TIPO_CONVIDADO1`
+    FOREIGN KEY (`SEQ_TIPO_CONVIDADO`)
+    REFERENCES `cerimonial`.`TIPO_CONVIDADO` (`SEQ_TIPO_CONVIDADO`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+-- -----------------------------------------------------
+-- Table `cerimonial`.`SITUACAO_CONVITE`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `cerimonial`.`SITUACAO_CONVITE` (
+  `SEQ_SITUACAO_CONVITE` INT NOT NULL AUTO_INCREMENT,
+  `SEQ_CONVIDADO_EVENTO` INT NOT NULL,
+  `DSC_SITUACAO_CONVITE` VARCHAR(200) NULL,
+  `DAT_ALTERACAO` DATETIME NULL,
+  PRIMARY KEY (`SEQ_SITUACAO_CONVITE`),
+  INDEX `fk_SITUACAO_CONVITE_CONVIDADO_EVENTO1_idx` (`SEQ_CONVIDADO_EVENTO` ASC),
+  CONSTRAINT `fk_SITUACAO_CONVITE_CONVIDADO_EVENTO1`
+    FOREIGN KEY (`SEQ_CONVIDADO_EVENTO`)
+    REFERENCES `cerimonial`.`CONVIDADO_EVENTO` (`SEQ_CONVIDADO_EVENTO`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+USE `cerimonial` ;
+
+INSERT INTO `cerimonial`.`PESSOA`(
+	NOM_PESSOA,
+	NUM_CPF,
+	DSC_EMAIL,
+	DSC_SENHA,
+	FLG_ORGANIZADOR
+	
+) VALUES(
+	'ADMIN',
+	'000.000.000-00',
+	'admin',
+	'admin',
+	'S'
+);
