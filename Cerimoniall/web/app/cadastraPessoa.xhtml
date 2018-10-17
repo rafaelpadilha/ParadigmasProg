@@ -13,28 +13,25 @@
             <p:fieldset legend="Cadastro Cliente">
                 <p:panelGrid columns="2" layout="grid" style="width: 100%" styleClass="ui-noborder">
                     <h:outputLabel value="Nome"/>
-                    <p:inputText required="true" requiredMessage="Nome obrigatório!" maxlength="100"/>
+                    <p:inputText value="#{pessoaController.pessoa.nome}" required="true" requiredMessage="Nome obrigatório!" maxlength="100"/>
 
                     <h:outputLabel value="CPF"/>
-                    <p:inputMask mask="99999999999"  required="true" requiredMessage="CPF obrigatório!"/>
+                    <p:inputMask value="#{pessoaController.pessoa.cpf}" mask="999.999.999-99"  required="true" requiredMessage="CPF obrigatório!"/>
 
                     <h:outputLabel value="Email"/>
-                    <p:inputText  required="true" requiredMessage="Email obrigatório!" maxlength="64"/>
+                    <p:inputText value="#{pessoaController.pessoa.email}"  required="true" requiredMessage="Email obrigatório!" maxlength="64"/>
 
                     <h:outputLabel value="Telefone"/>
-                    <p:inputMask mask="(99)999999999"  required="true" requiredMessage="Telefone Celular obrigatório!" maxlength="20"/>
-
-                    <h:outputLabel value="Data de Nascimento"/>
-                    <p:calendar  required="true" requiredMessage="Data de nascimento obrigatória!"/>
+                    <p:inputMask value="#{pessoaController.pessoa.telefone}" mask="(99)999999999"  required="true" requiredMessage="Telefone Celular obrigatório!" maxlength="20"/>
 
                     <h:outputLabel value="Tipo de Pessoa:"/>
-                    <p:selectOneMenu >
-                        <f:selectItem itemLabel="Organizador" itemValue="3"/>
-                        <f:selectItem itemLabel="Convidado" itemValue="4"/>
+                    <p:selectOneMenu value="#{pessoaController.pessoa.organizador}">
+                        <f:selectItem itemLabel="Convidado" itemValue="false"/>
+                        <f:selectItem itemLabel="Organizador" itemValue="true"/>
                     </p:selectOneMenu>
                     
                     <h:commandButton value="Cancelar" action="/app/index.jsf" style="height: 50px;width: 200px;" immediate="true"/>
-                    <h:commandButton value="Cadastrar"  style="height: 50px;width: 200px;;background-color: greenyellow"/>
+                    <h:commandButton action="#{pessoaController.cadastra_pessoa()}" value="Cadastrar"  style="height: 50px;width: 200px;;background-color: greenyellow"/>
 
                 </p:panelGrid>
             </p:fieldset>

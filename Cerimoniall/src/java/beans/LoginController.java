@@ -1,6 +1,7 @@
 package beans;
 
 import dao.LoginDAO;
+import java.io.Serializable;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -15,7 +16,7 @@ import util.exception.ErroSistema;
  */
 @ManagedBean
 @SessionScoped
-public class LoginController {
+public class LoginController implements Serializable{
 
     private Login login = new Login();
     private LoginDAO ldao = new LoginDAO();

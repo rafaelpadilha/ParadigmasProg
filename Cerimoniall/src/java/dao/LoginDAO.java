@@ -17,7 +17,7 @@ import util.exception.ErroSistema;
 public class LoginDAO {
     
     public Integer autenticar(Login lg)throws ErroSistema{
-        String sql = "SELECT * FROM CERIMONIAL.LOGIN WHERE USER=? AND PASSWORD=?";
+        String sql = "SELECT * FROM cerimonial.PESSOA WHERE DSC_EMAIL=? AND DSC_SENHA=?";
         try {
             Connection con = ConnectionFactory.getConexao();
             PreparedStatement ps = con.prepareCall(sql);
