@@ -16,10 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.Login;
 
-/**
- *
- * @author Rafael Padilha                 <github.com/rafaelpadilha>
- */
 @WebFilter(filterName = "loginAuth", urlPatterns = {"/security/login.jsf"})
 public class loginAuth implements Filter {
     

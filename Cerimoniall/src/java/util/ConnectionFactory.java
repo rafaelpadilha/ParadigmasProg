@@ -5,10 +5,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import util.exception.ErroSistema;
 
-/**
- *
- * @author Rafael Padilha                 <github.com/rafaelpadilha>
- */
 public class ConnectionFactory {
 
     private static Connection conexao;

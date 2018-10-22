@@ -1,9 +1,5 @@
 package util.exception;
 
-/**
- *
- * @author Rafael Padilha                 <github.com/rafaelpadilha>
- */
 public class ErroSistema extends Exception{
 
     public ErroSistema(String message) {

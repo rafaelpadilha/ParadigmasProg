@@ -22,7 +22,7 @@
                     <p:inputText value="#{pessoaController.pessoa.email}"  required="true" requiredMessage="Email obrigatório!" maxlength="64"/>
 
                     <h:outputLabel value="Telefone"/>
-                    <p:inputMask value="#{pessoaController.pessoa.telefone}" mask="(99)999999999"  required="true" requiredMessage="Telefone Celular obrigatório!" maxlength="20"/>
+                    <p:inputMask value="#{pessoaController.pessoa.telefone}" mask="(99)999999999" maxlength="20"/>
 
                     <h:outputLabel value="Tipo de Pessoa:"/>
                     <p:selectOneMenu value="#{pessoaController.pessoa.organizador}">

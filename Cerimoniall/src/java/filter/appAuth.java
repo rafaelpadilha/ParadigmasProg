@@ -16,10 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.Login;
 
-/**
- *
- * @author Rafael Padilha                 <github.com/rafaelpadilha>
- */
 @WebFilter(filterName = "appAuth", urlPatterns = {"/app/*"})
 public class appAuth implements Filter {
     

@@ -10,10 +10,6 @@ import model.Login;
 import util.ConnectionFactory;
 import util.exception.ErroSistema;
 
-/**
- *
- * @author Rafael Padilha                 <github.com/rafaelpadilha>
- */
 public class LoginDAO {
     
     public Integer autenticar(Login lg)throws ErroSistema{

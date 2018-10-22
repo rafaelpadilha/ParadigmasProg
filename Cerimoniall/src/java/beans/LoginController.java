@@ -10,10 +10,6 @@ import javax.servlet.http.HttpSession;
 import model.Login;
 import util.exception.ErroSistema;
 
-/**
- *
- * @author Rafael Padilha                 <github.com/rafaelpadilha>
- */
 @ManagedBean
 @SessionScoped
 public class LoginController implements Serializable{
