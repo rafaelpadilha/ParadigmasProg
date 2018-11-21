@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import model.Evento;
 import model.Pessoa;
 import util.ConnectionFactory;
 import util.exception.ErroSistema;
@@ -119,5 +120,67 @@ public class PessoaDAO {
             throw new ErroSistema("Erro ao editar a pessoa!(SQLE)", ex);
         }
         ConnectionFactory.fechaConexao();
+    }
+    
+    public void insertConvidados(List<Pessoa> lista, Evento e)throws ErroSistema{
+        String sql = "INSERT INTO CERIMONIAL.CONVIDADO_EVENTO(SEQ_PESSOA,SEQ_EVENTO,DAT_CONVITE_EMITIDO,FLG_ATIVO,SEQ_TIPO_CONVIDADO)\n" +
+"VALUES(?,?,null,'S',1);";
+        System.out.println("LISTA:" + lista);
+        try{
+        Connection conexao = ConnectionFactory.getConexao();
+        for(Pessoa p: lista){
+            PreparedStatement ps = conexao.prepareStatement(sql);
+            ps.setInt(1, p.getSequencial());
+            ps.setInt(2, Integer.parseInt(e.getSequencial()));
+            ps.execute();
+            System.out.println("TESTE");
+        }
+        
+        } catch (ErroSistema ex) {
+            throw new ErroSistema("Erro ao inserir lista de convidados no evento!", ex);
+        } catch (SQLException ex) {
+            throw new ErroSistema("Erro ao inserir lista de convidados no evento!(SQLE)", ex);
+        }
+        ConnectionFactory.fechaConexao();
+    }
+    
+    
+    public List<Pessoa> selectConvidados(Evento e) throws ErroSistema{
+        List<Pessoa> pessoas = new ArrayList<>();
+        String sql = "SELECT * FROM PESSOA P INNER JOIN CONVIDADO_EVENTO C USING(SEQ_PESSOA) WHERE P.FLG_ATIVO = 'S' AND C.SEQ_EVENTO = ?";
+        try {
+            Connection con = ConnectionFactory.getConexao();
+            PreparedStatement ps = con.prepareStatement(sql);
+            System.out.println("A");
+            ps.setInt(1, Integer.parseInt(e.getSequencial()));
+            System.out.println("B");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Pessoa p = new Pessoa();
+                String org = null;
+                p.setSequencial(rs.getInt("SEQ_PESSOA"));
+                p.setNome(rs.getString("NOM_PESSOA"));
+                p.setCpf(rs.getString("NUM_CPF"));
+                p.setEmail(rs.getString("DSC_EMAIL"));
+                p.setSenha(rs.getString("DSC_SENHA"));
+                org = rs.getString("FLG_ORGANIZADOR");
+                if (org.equals("S")) {
+                    p.setOrganizador(TRUE);
+                } else {
+                    p.setOrganizador(FALSE);
+                }
+                p.setTelefone(rs.getString("NUM_TELEFONE"));
+                pessoas.add(p);
+            }
+            
+            ConnectionFactory.fechaConexao();
+            return pessoas;
+
+        } catch (ErroSistema ex) {
+            throw new ErroSistema("Erro ao listar convidados!", ex);
+        } catch (SQLException ex) {
+            throw new ErroSistema("Erro ao listar convidados!", ex);
+        }
+        
     }
 }

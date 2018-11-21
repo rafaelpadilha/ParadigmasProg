@@ -51,10 +51,16 @@
                                                         <f:setPropertyActionListener value="#{evento}" target="#{eventoController.eventoSelecionada}" />
                                                     </p:commandLink>
                                                 </p:column>
+                                                <p:column>
+                                                    <p:commandLink update=":convidados" oncomplete="PF('listEvento').show()">
+                                                        <h:outputText styleClass="ui-icon ui-icon-note" style="margin:0 auto;" title="Lista de convidados"/>
+                                                        <f:setPropertyActionListener value="#{evento}" target="#{eventoController.eventoSelecionada}" />
+                                                    </p:commandLink>
+                                                </p:column>
                                             </p:row>
                                         </p:panelGrid>
                                     </p:column>
-                                    <p:column headerText="Sequencial" sortBy="#{evento.sequencial}">
+                                    <p:column headerText="ID Evento" sortBy="#{evento.sequencial}">
                                         <h:outputText value="#{evento.sequencial}"></h:outputText>
                                     </p:column>
                                     <p:column headerText="Nome" sortBy="#{evento.nome}">
@@ -87,24 +93,23 @@
                 <h:outputText value="Deseja mesmo cancelar a evento:"></h:outputText>
                 <p:outputPanel id="pessoaInfo" rendered="#{not empty eventoController.eventoSelecionada}">
                     <p:panelGrid columns="2">
-                        <p:column headerText="Sequencial">
-                            <h:outputText value="#{eventoController.eventoSelecionada.sequencial}"></h:outputText>
-                        </p:column>
-                        <p:column headerText="Nome">
-                            <h:outputText value="#{eventoController.eventoSelecionada.nome}"></h:outputText>
-                        </p:column>
-                        <p:column headerText="Local">
-                            <h:outputText value="#{eventoController.eventoSelecionada.local}"></h:outputText>
-                        </p:column>
-                        <p:column headerText="Descrição">
-                            <h:outputText value="#{eventoController.eventoSelecionada.descricao}"></h:outputText>
-                        </p:column>
-                        <p:column headerText="ID Responsável">
-                            <h:outputText value="#{eventoController.eventoSelecionada.seqResp}"></h:outputText>
-                        </p:column>
-                        <p:column headerText="Data">
-                            <h:outputText value="#{eventoController.eventoSelecionada.data}"></h:outputText>
-                        </p:column>
+                        <h:outputText value="ID"/>
+                        <h:outputText value="#{eventoController.eventoSelecionada.sequencial}"/>
+
+                        <h:outputText value="Nome"></h:outputText>
+                        <h:outputText value="#{eventoController.eventoSelecionada.nome}"></h:outputText>
+
+                        <h:outputText value="Local"></h:outputText>
+                        <h:outputText value="#{eventoController.eventoSelecionada.local}"></h:outputText>
+
+                        <h:outputText value="Descrição"></h:outputText>
+                        <h:outputText value="#{eventoController.eventoSelecionada.descricao}"></h:outputText>
+
+                        <h:outputText value="ID Responsável"></h:outputText>
+                        <h:outputText value="#{eventoController.eventoSelecionada.seqResp}"></h:outputText>
+
+                        <h:outputText value="Data"></h:outputText>
+                        <h:outputText value="#{eventoController.eventoSelecionada.data}"></h:outputText>
 
                         <p:commandButton value="Confirmar" style="background-color: lightgreen" action="#{eventoController.deletar(eventoController.eventoSelecionada)}" onclick="PF('delEvento').hide();update('@form')"></p:commandButton>
                         <p:commandButton value="Cancelar" style="background-color: lightcoral" onclick="PF('delEvento').hide()"></p:commandButton>
@@ -114,31 +119,45 @@
         </h:form>
         <h:form id='editar'>
             <p:dialog header="Editar Pessoa" widgetVar="editEvento" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
-                <p:outputPanel rendered="#{not empty pessoaController.pessoaSelecionada}">
+                <p:outputPanel rendered="#{not empty eventoController.eventoSelecionada}">
                     <p:panelGrid columns="2">
 
-                        <h:outputText value="Sequencial:"></h:outputText>
-                        <p:inputText value="#{pessoaController.pessoaSelecionada.sequencial}" required="true" requiredMessage="Seq Obrigatório" disabled="true"></p:inputText>
+                        <h:outputLabel value="Nome do evento"/>
+                        <p:inputText value="#{eventoController.eventoSelecionada.nome}" required="true" requiredMessage="Nome obrigatório!" maxlength="100"/>
 
-                        <h:outputLabel value="Nome"/>
-                        <p:inputText value="#{pessoaController.pessoaSelecionada.nome}" required="true" requiredMessage="Nome obrigatório!" maxlength="100"/>
+                        <h:outputLabel value="Local do evento"/>
+                        <p:inputText value="#{eventoController.eventoSelecionada.local}" required="true" requiredMessage="Local obrigatório!" maxlength="400"/>
 
-                        <h:outputLabel value="CPF"/>
-                        <p:inputMask value="#{pessoaController.pessoaSelecionada.cpf}" mask="999.999.999-99"  required="true" requiredMessage="CPF obrigatório!"/>
+                        <h:outputLabel value="Descrição do evento"/>
+                        <p:inputText value="#{eventoController.eventoSelecionada.descricao}" maxlength="400"/>
 
-                        <h:outputLabel value="Email"/>
-                        <p:inputText value="#{pessoaController.pessoaSelecionada.email}"  required="true" requiredMessage="Email obrigatório!" maxlength="64"/>
+                        <h:outputLabel value="Data do Evento"/>
+                        <p:calendar value="#{eventoController.eventoSelecionada.data}" required="true" requiredMessage="Data obrigatória!"/>
 
-                        <h:outputLabel value="Telefone"/>
-                        <p:inputMask value="#{pessoaController.pessoaSelecionada.telefone}" mask="(99)999999999" maxlength="20"/>
-
-                        <h:outputLabel value="Tipo de Pessoa:"/>
-                        <p:selectOneMenu value="#{pessoaController.pessoaSelecionada.organizador}">
-                            <f:selectItem itemLabel="Convidado" itemValue="false"/>
-                            <f:selectItem itemLabel="Organizador" itemValue="true"/>
-                        </p:selectOneMenu>
-                        <p:commandButton value="Confirmar" style="background-color: lightgreen" action="#{pessoaController.editar(pessoaController.pessoaSelecionada)}" onclick="PF('editEvento').hide();update('@form')"></p:commandButton>
+                        <p:commandButton value="Confirmar" style="background-color: lightgreen" action="#{eventoController.editar(eventoController.eventoSelecionada)}" onclick="PF('editEvento').hide();update('@form')"></p:commandButton>
                         <p:commandButton value="Cancelar" style="background-color: lightcoral" onclick="PF('editEvento').hide()"></p:commandButton>
+
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+        <h:form id='convidados'>
+            <p:dialog header="Lista de Convidados" widgetVar="listEvento" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:outputLabel value="#{pessoaController.init()}"/>
+                <p:outputPanel rendered="#{not empty eventoController.eventoSelecionada}">
+                    <h:outputLabel value="#{pessoaController.buscaConvidados(eventoController.eventoSelecionada)}"/>
+                    <p:panelGrid columns="1">
+
+                        <h:form>
+                            <p:pickList value="#{pessoaController.listPessoas}"
+                                        var="pes"
+                                        itemLabel="#{pes.nome} (#{pes.cpf})"
+                                        itemValue="#{pes}"
+                                        converter="empConverter"/>
+                            <p:commandButton value="Confirmar" style="background-color: lightgreen" action="#{pessoaController.adicionarConvidados(eventoController.eventoSelecionada)}" onclick="PF('listEvento').hide();update('@form')"></p:commandButton>
+                            <p:commandButton value="Cancelar" style="background-color: lightcoral" onclick="PF('listEvento').hide()"></p:commandButton>
+                        </h:form>
+
 
                     </p:panelGrid>
                 </p:outputPanel>

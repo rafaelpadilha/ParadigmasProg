@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 public class Pessoa {
     Integer sequencial;
     String nome;
@@ -63,6 +65,31 @@ public class Pessoa {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 23 * hash + Objects.hashCode(this.sequencial);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Pessoa other = (Pessoa) obj;
+        if (!Objects.equals(this.sequencial, other.sequencial)) {
+            return false;
+        }
+        return true;
     }
     
     

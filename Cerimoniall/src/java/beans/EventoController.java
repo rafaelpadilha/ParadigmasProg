@@ -3,13 +3,16 @@ package beans;
 import dao.EventoDAO;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import model.Evento;
 import model.Pessoa;
+import org.primefaces.model.DualListModel;
 import util.exception.ErroSistema;
 
 @ManagedBean
@@ -35,29 +38,27 @@ public class EventoController implements Serializable{
     
     public void listar(){
         try {
-            System.out.println("TESTEEE\n\n\n\n");
             setEventos(edao.buscar(this.getTextoBusca(), this.getOpBusca()));
         } catch (ErroSistema ex) {
             adicionarMensagem(ex.getMessage(), ex.getCause().getMessage(), FacesMessage.SEVERITY_ERROR);
         }
     }
-    /*
-    public void deletar(Pessoa p){
-        try{
-            pdao.apagar(p);
-        }catch (ErroSistema ex) {
-            adicionarMensagem(ex.getMessage(), ex.getCause().getMessage(), FacesMessage.SEVERITY_ERROR);
-        }
-    }
     
-    public void editar(Pessoa p){
+    public void deletar(Evento e){
         try{
-            pdao.edita(p);
+            edao.apagar(e);
         }catch (ErroSistema ex) {
             adicionarMensagem(ex.getMessage(), ex.getCause().getMessage(), FacesMessage.SEVERITY_ERROR);
         }
     }
-    */
+
+    public void editar(Evento e){
+        try{
+            edao.edita(e);
+        }catch (ErroSistema ex) {
+            adicionarMensagem(ex.getMessage(), ex.getCause().getMessage(), FacesMessage.SEVERITY_ERROR);
+        }
+    }
 
     public Evento getEvento() {
         return evento;

@@ -26,7 +26,7 @@ import util.exception.ErroSistema;
 public class EventoDAO {
     public void cadastrar(Evento e,Integer seqPessoa) throws ErroSistema {
         String sql = "insert into cerimonial.evento(nom_evento, dsc_local, dsc_evento, seq_pessoa_encarregada, flg_ativo, dat_evento)\n" +
-"values(?,?,?, ?, 1,?)";
+"values(?,?,?, ?, 'S',?)";
         try {
             Connection con = ConnectionFactory.getConexao();
             PreparedStatement ps = con.prepareStatement(sql);
@@ -41,7 +41,7 @@ public class EventoDAO {
         } catch (ErroSistema ex) {
             throw new ErroSistema("Erro ao tentar cadastrar evento!", ex);
         } catch (SQLException ex) {
-            throw new ErroSistema("Erro ao tentar cadastrar evento!", ex);
+            throw new ErroSistema("Erro ao tentar cadastrar evento!(SQLE)", ex);
         }
     }
 
@@ -78,9 +78,9 @@ public class EventoDAO {
             ConnectionFactory.fechaConexao();
             return eventos;
         } catch (ErroSistema ex) {
-            throw new ErroSistema("Erro ao listar pessoas!", ex);
+            throw new ErroSistema("Erro ao listar eventos!", ex);
         } catch (SQLException ex) {
-            throw new ErroSistema("Erro ao listar pessoas!(SQLE)", ex);
+            throw new ErroSistema("Erro ao listar eventos!(SQLE)", ex);
         }
     }
     
@@ -91,39 +91,37 @@ public class EventoDAO {
         PreparedStatement ps = conexao.prepareStatement(sql);
         ps.execute();
         } catch (ErroSistema ex) {
-            throw new ErroSistema("Erro ao apagar a pessoa!", ex);
+            throw new ErroSistema("Erro ao apagar o evento!", ex);
         } catch (SQLException ex) {
-            throw new ErroSistema("Erro ao apagar a pessoa!(SQLE)", ex);
+            throw new ErroSistema("Erro ao apagar o evento!(SQLE)", ex);
         }
         ConnectionFactory.fechaConexao();
     }
     
-    public void edita(Pessoa p) throws ErroSistema{
-//        String nome;
-//    String cpf;
-//    String email;
-//    String senha;
-//    Boolean organizador = false;
-//    String telefone;
-        String sql = "update pessoa set NOM_PESSOA = ?,NUM_CPF = ?,DSC_EMAIL=?,FLG_ORGANIZADOR=?,NUM_TELEFONE = ? where SEQ_PESSOA = " + p.getSequencial().toString();
+    public void edita(Evento e) throws ErroSistema{
+    /*
+    private String sequencial;
+    private String nome;
+    private String local;
+    private String descricao;
+    private Date data;
+    private String seqResp;
+    private Boolean ativo;
+    */
+        String sql = "update cerimonial.evento set NOM_EVENTO = ?,DSC_LOCAL = ?, DSC_EVENTO = ?,SEQ_PESSOA_ENCARREGADA=?,DAT_EVENTO=? where SEQ_EVENTO = " + e.getSequencial();
         try{
         Connection conexao = ConnectionFactory.getConexao();
         PreparedStatement ps = conexao.prepareStatement(sql);
-        ps.setString(1, p.getNome());
-        ps.setString(2, p.getCpf());
-        ps.setString(3, p.getEmail());
-        if(p.getOrganizador()==true){
-            ps.setString(4, "S");
-        }else{
-            ps.setString(4, "N");
-        }
-        ps.setString(5, p.getTelefone());
-        
+        ps.setString(1, e.getNome());
+        ps.setString(2, e.getLocal());
+        ps.setString(3, e.getDescricao());
+        ps.setInt(4,Integer.parseInt(e.getSeqResp()));
+        ps.setDate(5, new Date(e.getData().getTime()));
         ps.execute();
         } catch (ErroSistema ex) {
-            throw new ErroSistema("Erro ao editar a pessoa!", ex);
+            throw new ErroSistema("Erro ao editar o evento!", ex);
         } catch (SQLException ex) {
-            throw new ErroSistema("Erro ao editar a pessoa!(SQLE)", ex);
+            throw new ErroSistema("Erro ao editar o evento!(SQLE)", ex);
         }
         ConnectionFactory.fechaConexao();
     }
