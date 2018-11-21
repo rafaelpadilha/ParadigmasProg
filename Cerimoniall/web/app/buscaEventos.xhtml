@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:decorate xmlns="http://www.w3.org/1999/xhtml"
+             xmlns:h="http://xmlns.jcp.org/jsf/html"
+             xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+             template="template.xhtml"
+             xmlns:p="http://primefaces.org/ui"
+             xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+    <div>
+        <h:form>
+
+            <p:fieldset legend="Listar Eventos">
+                <p:panelGrid style="width: 100%" styleClass="ui-noborder">
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Pesquisar:"></p:outputLabel>
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="filtrar" style="width: 98%" value="#{eventoController.textoBusca}" onkeydown="#{eventoController.listar()}">
+                                <p:ajax event="keyup" update="@form" ></p:ajax>
+                            </p:inputText>
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu style="width: 88%" value="#{eventoController.opBusca}" >
+                                <f:selectItem itemLabel="Nome" itemValue="NOM_EVENTO" noSelectionOption="true"></f:selectItem>
+                                <f:selectItem itemLabel="Local" itemValue="DSC_LOCAL"></f:selectItem>
+                                <p:ajax update="@form" ></p:ajax>
+                            </p:selectOneMenu>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <h:form id="dados">
+                            <p:outputLabel value="#{eventoController.listar()}"></p:outputLabel>
+                            <p:column colspan="3">
+                                <p:dataTable var="evento" style="width: 100%" value="#{eventoController.eventos}">
+                                    <p:column headerText="Opções">
+                                        <p:panelGrid>
+                                            <!--OPÇOES-->
+                                            <p:row>
+                                                <p:column>
+                                                    <p:commandLink update=":del" oncomplete="PF('delEvento').show()">
+                                                        <h:outputText styleClass="ui-icon ui-icon-close" style="margin:0 auto;" title="Cancelar Cliente"/>
+                                                        <f:setPropertyActionListener value="#{evento}" target="#{eventoController.eventoSelecionada}" />
+                                                    </p:commandLink>
+                                                </p:column>
+                                                <p:column>
+                                                    <p:commandLink update=":editar" oncomplete="PF('editEvento').show()">
+                                                        <h:outputText styleClass="ui-icon ui-icon-pencil" style="margin:0 auto;" title="Editar Cliente"/>
+                                                        <f:setPropertyActionListener value="#{evento}" target="#{eventoController.eventoSelecionada}" />
+                                                    </p:commandLink>
+                                                </p:column>
+                                            </p:row>
+                                        </p:panelGrid>
+                                    </p:column>
+                                    <p:column headerText="Sequencial" sortBy="#{evento.sequencial}">
+                                        <h:outputText value="#{evento.sequencial}"></h:outputText>
+                                    </p:column>
+                                    <p:column headerText="Nome" sortBy="#{evento.nome}">
+                                        <h:outputText value="#{evento.nome}"></h:outputText>
+                                    </p:column>
+                                    <p:column headerText="Local" sortBy="#{evento.local}">
+                                        <h:outputText value="#{evento.local}"></h:outputText>
+                                    </p:column>
+                                    <p:column headerText="Descrição" sortBy="#{evento.descricao}">
+                                        <h:outputText value="#{evento.descricao}"></h:outputText>
+                                    </p:column>
+                                    <p:column headerText="ID Responsável" sortBy="#{evento.seqResp}">
+                                        <h:outputText value="#{evento.seqResp}"></h:outputText>
+                                    </p:column>
+                                    <p:column headerText="Data" sortBy="#{evento.data}">
+                                        <h:outputText value="#{evento.data}"></h:outputText>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:column>
+                        </h:form>
+                    </p:row>
+
+
+
+                </p:panelGrid>
+            </p:fieldset>
+        </h:form>
+        <h:form id="del">
+            <p:dialog header="Cancelar Evento" widgetVar="delEvento" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:outputText value="Deseja mesmo cancelar a evento:"></h:outputText>
+                <p:outputPanel id="pessoaInfo" rendered="#{not empty eventoController.eventoSelecionada}">
+                    <p:panelGrid columns="2">
+                        <p:column headerText="Sequencial">
+                            <h:outputText value="#{eventoController.eventoSelecionada.sequencial}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Nome">
+                            <h:outputText value="#{eventoController.eventoSelecionada.nome}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Local">
+                            <h:outputText value="#{eventoController.eventoSelecionada.local}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Descrição">
+                            <h:outputText value="#{eventoController.eventoSelecionada.descricao}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="ID Responsável">
+                            <h:outputText value="#{eventoController.eventoSelecionada.seqResp}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Data">
+                            <h:outputText value="#{eventoController.eventoSelecionada.data}"></h:outputText>
+                        </p:column>
+
+                        <p:commandButton value="Confirmar" style="background-color: lightgreen" action="#{eventoController.deletar(eventoController.eventoSelecionada)}" onclick="PF('delEvento').hide();update('@form')"></p:commandButton>
+                        <p:commandButton value="Cancelar" style="background-color: lightcoral" onclick="PF('delEvento').hide()"></p:commandButton>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+        <h:form id='editar'>
+            <p:dialog header="Editar Pessoa" widgetVar="editEvento" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel rendered="#{not empty pessoaController.pessoaSelecionada}">
+                    <p:panelGrid columns="2">
+
+                        <h:outputText value="Sequencial:"></h:outputText>
+                        <p:inputText value="#{pessoaController.pessoaSelecionada.sequencial}" required="true" requiredMessage="Seq Obrigatório" disabled="true"></p:inputText>
+
+                        <h:outputLabel value="Nome"/>
+                        <p:inputText value="#{pessoaController.pessoaSelecionada.nome}" required="true" requiredMessage="Nome obrigatório!" maxlength="100"/>
+
+                        <h:outputLabel value="CPF"/>
+                        <p:inputMask value="#{pessoaController.pessoaSelecionada.cpf}" mask="999.999.999-99"  required="true" requiredMessage="CPF obrigatório!"/>
+
+                        <h:outputLabel value="Email"/>
+                        <p:inputText value="#{pessoaController.pessoaSelecionada.email}"  required="true" requiredMessage="Email obrigatório!" maxlength="64"/>
+
+                        <h:outputLabel value="Telefone"/>
+                        <p:inputMask value="#{pessoaController.pessoaSelecionada.telefone}" mask="(99)999999999" maxlength="20"/>
+
+                        <h:outputLabel value="Tipo de Pessoa:"/>
+                        <p:selectOneMenu value="#{pessoaController.pessoaSelecionada.organizador}">
+                            <f:selectItem itemLabel="Convidado" itemValue="false"/>
+                            <f:selectItem itemLabel="Organizador" itemValue="true"/>
+                        </p:selectOneMenu>
+                        <p:commandButton value="Confirmar" style="background-color: lightgreen" action="#{pessoaController.editar(pessoaController.pessoaSelecionada)}" onclick="PF('editEvento').hide();update('@form')"></p:commandButton>
+                        <p:commandButton value="Cancelar" style="background-color: lightcoral" onclick="PF('editEvento').hide()"></p:commandButton>
+
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+    </div>
+</ui:decorate>
+
