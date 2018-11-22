@@ -29,7 +29,6 @@ public class PessoaController implements Serializable {
 
     public void cadastra_pessoa() {
         try {
-            System.out.println("TESTE");
             pdao.cadastrar(this.pessoa);
             pessoa = new Pessoa();
             adicionarMensagem("Concluido!", "Pessoa cadastrado com sucesso", FacesMessage.SEVERITY_INFO);
@@ -66,8 +65,20 @@ public class PessoaController implements Serializable {
     
     public void adicionarConvidados(Evento e){
         try {
-            System.out.println("L1:" + listPessoas.getTarget());
-            pdao.insertConvidados(listPessoas.getTarget(),e);
+            List<Pessoa> tmp = pdao.selectConvidados(e);
+            List<Pessoa> tmp_t = listPessoas.getTarget();
+            for(Pessoa p: tmp_t){
+                if(!tmp.contains(p)){
+                    pdao.insertConvidados(p, e);
+                }
+            }
+            tmp = pdao.selectConvidados(e);
+            List<Pessoa> tmp_s = listPessoas.getSource();
+            for(Pessoa p: tmp_s){
+                if(tmp.contains(p)){
+                    pdao.cancelaConvidado(p, e);
+                }
+            }
             adicionarMensagem("Concluido!", "Convidados adicionados com sucesso", FacesMessage.SEVERITY_INFO);
         } catch (ErroSistema ex) {
             adicionarMensagem(ex.getMessage(), ex.getCause().getMessage(), FacesMessage.SEVERITY_ERROR);
@@ -79,13 +90,14 @@ public class PessoaController implements Serializable {
         try {
             List<Pessoa> tmp = pdao.selectConvidados(e);
             listPessoas.setTarget(tmp);
-            for(Pessoa a : listPessoas.getSource()){ //Aqui
-                if(tmp.contains(a)){
-                    List<Pessoa> tmp_src = listPessoas.getSource();
-                    tmp_src.remove(a);
-                    listPessoas.setSource(tmp_src);
+            List<Pessoa> tmp_s = listPessoas.getSource();
+            for(Pessoa p:tmp){
+                if(tmp_s.contains(p)){
+                    tmp_s.remove(p);
                 }
             }
+            listPessoas.setSource(tmp_s);
+           
         } catch (ErroSistema ex) {
             adicionarMensagem(ex.getMessage(), ex.getCause().getMessage(), FacesMessage.SEVERITY_ERROR);
         }

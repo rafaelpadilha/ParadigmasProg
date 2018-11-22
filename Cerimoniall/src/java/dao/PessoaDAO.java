@@ -77,13 +77,13 @@ public class PessoaDAO {
             throw new ErroSistema("Erro ao listar pessoas!(SQLE)", ex);
         }
     }
-    
-    public void apagar(Pessoa p) throws ErroSistema{
+
+    public void apagar(Pessoa p) throws ErroSistema {
         String sql = "update pessoa set FLG_ATIVO = 'N' where SEQ_PESSOA = " + p.getSequencial().toString();
-        try{
-        Connection conexao = ConnectionFactory.getConexao();
-        PreparedStatement ps = conexao.prepareStatement(sql);
-        ps.execute();
+        try {
+            Connection conexao = ConnectionFactory.getConexao();
+            PreparedStatement ps = conexao.prepareStatement(sql);
+            ps.execute();
         } catch (ErroSistema ex) {
             throw new ErroSistema("Erro ao apagar a pessoa!", ex);
         } catch (SQLException ex) {
@@ -91,29 +91,23 @@ public class PessoaDAO {
         }
         ConnectionFactory.fechaConexao();
     }
-    
-    public void edita(Pessoa p) throws ErroSistema{
-//        String nome;
-//    String cpf;
-//    String email;
-//    String senha;
-//    Boolean organizador = false;
-//    String telefone;
+
+    public void edita(Pessoa p) throws ErroSistema {
         String sql = "update pessoa set NOM_PESSOA = ?,NUM_CPF = ?,DSC_EMAIL=?,FLG_ORGANIZADOR=?,NUM_TELEFONE = ? where SEQ_PESSOA = " + p.getSequencial().toString();
-        try{
-        Connection conexao = ConnectionFactory.getConexao();
-        PreparedStatement ps = conexao.prepareStatement(sql);
-        ps.setString(1, p.getNome());
-        ps.setString(2, p.getCpf());
-        ps.setString(3, p.getEmail());
-        if(p.getOrganizador()==true){
-            ps.setString(4, "S");
-        }else{
-            ps.setString(4, "N");
-        }
-        ps.setString(5, p.getTelefone());
-        
-        ps.execute();
+        try {
+            Connection conexao = ConnectionFactory.getConexao();
+            PreparedStatement ps = conexao.prepareStatement(sql);
+            ps.setString(1, p.getNome());
+            ps.setString(2, p.getCpf());
+            ps.setString(3, p.getEmail());
+            if (p.getOrganizador() == true) {
+                ps.setString(4, "S");
+            } else {
+                ps.setString(4, "N");
+            }
+            ps.setString(5, p.getTelefone());
+
+            ps.execute();
         } catch (ErroSistema ex) {
             throw new ErroSistema("Erro ao editar a pessoa!", ex);
         } catch (SQLException ex) {
@@ -121,21 +115,19 @@ public class PessoaDAO {
         }
         ConnectionFactory.fechaConexao();
     }
-    
-    public void insertConvidados(List<Pessoa> lista, Evento e)throws ErroSistema{
-        String sql = "INSERT INTO CERIMONIAL.CONVIDADO_EVENTO(SEQ_PESSOA,SEQ_EVENTO,DAT_CONVITE_EMITIDO,FLG_ATIVO,SEQ_TIPO_CONVIDADO)\n" +
-"VALUES(?,?,null,'S',1);";
-        System.out.println("LISTA:" + lista);
-        try{
-        Connection conexao = ConnectionFactory.getConexao();
-        for(Pessoa p: lista){
-            PreparedStatement ps = conexao.prepareStatement(sql);
-            ps.setInt(1, p.getSequencial());
-            ps.setInt(2, Integer.parseInt(e.getSequencial()));
-            ps.execute();
-            System.out.println("TESTE");
-        }
-        
+
+    public void insertConvidados(List<Pessoa> lista, Evento e) throws ErroSistema {
+        String sql = "INSERT INTO CERIMONIAL.CONVIDADO_EVENTO(SEQ_PESSOA,SEQ_EVENTO,DAT_CONVITE_EMITIDO,FLG_ATIVO,SEQ_TIPO_CONVIDADO)\n"
+                + "VALUES(?,?,null,'S',1);";
+        try {
+            Connection conexao = ConnectionFactory.getConexao();
+            for (Pessoa p : lista) {
+                PreparedStatement ps = conexao.prepareStatement(sql);
+                ps.setInt(1, p.getSequencial());
+                ps.setInt(2, Integer.parseInt(e.getSequencial()));
+                ps.execute();
+            }
+
         } catch (ErroSistema ex) {
             throw new ErroSistema("Erro ao inserir lista de convidados no evento!", ex);
         } catch (SQLException ex) {
@@ -143,17 +135,14 @@ public class PessoaDAO {
         }
         ConnectionFactory.fechaConexao();
     }
-    
-    
-    public List<Pessoa> selectConvidados(Evento e) throws ErroSistema{
+
+    public List<Pessoa> selectConvidados(Evento e) throws ErroSistema {
         List<Pessoa> pessoas = new ArrayList<>();
-        String sql = "SELECT * FROM PESSOA P INNER JOIN CONVIDADO_EVENTO C USING(SEQ_PESSOA) WHERE P.FLG_ATIVO = 'S' AND C.SEQ_EVENTO = ?";
+        String sql = "SELECT * FROM PESSOA P INNER JOIN CONVIDADO_EVENTO C USING(SEQ_PESSOA) WHERE P.FLG_ATIVO = 'S' AND C.SEQ_EVENTO = ? AND C.FLG_ATIVO = 'S'";
         try {
             Connection con = ConnectionFactory.getConexao();
             PreparedStatement ps = con.prepareStatement(sql);
-            System.out.println("A");
             ps.setInt(1, Integer.parseInt(e.getSequencial()));
-            System.out.println("B");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Pessoa p = new Pessoa();
@@ -172,7 +161,7 @@ public class PessoaDAO {
                 p.setTelefone(rs.getString("NUM_TELEFONE"));
                 pessoas.add(p);
             }
-            
+
             ConnectionFactory.fechaConexao();
             return pessoas;
 
@@ -181,6 +170,39 @@ public class PessoaDAO {
         } catch (SQLException ex) {
             throw new ErroSistema("Erro ao listar convidados!", ex);
         }
-        
+    }
+
+    public void cancelaConvidado(Pessoa p, Evento e) throws ErroSistema {
+        String sql = "UPDATE CERIMONIAL.CONVIDADO_EVENTO SET FLG_ATIVO = 'N' WHERE SEQ_PESSOA  = " + p.getSequencial().toString()
+                + " AND SEQ_EVENTO = " + e.getSequencial();
+        try {
+            Connection conexao = ConnectionFactory.getConexao();
+            PreparedStatement ps = conexao.prepareStatement(sql);
+            ps.execute();
+
+        } catch (ErroSistema ex) {
+            throw new ErroSistema("Erro ao cancelar convidado!", ex);
+        } catch (SQLException ex) {
+            throw new ErroSistema("Erro ao cancelar convidado!(SQLE)", ex);
+        }
+        ConnectionFactory.fechaConexao();
+    }
+
+    public void insertConvidados(Pessoa p, Evento e) throws ErroSistema {
+        String sql = "INSERT INTO CERIMONIAL.CONVIDADO_EVENTO(SEQ_PESSOA,SEQ_EVENTO,DAT_CONVITE_EMITIDO,FLG_ATIVO,SEQ_TIPO_CONVIDADO)\n"
+                + "VALUES(?,?,null,'S',1);";
+        try {
+            Connection conexao = ConnectionFactory.getConexao();
+            PreparedStatement ps = conexao.prepareStatement(sql);
+            ps.setInt(1, p.getSequencial());
+            ps.setInt(2, Integer.parseInt(e.getSequencial()));
+            ps.execute();
+            ConnectionFactory.fechaConexao();
+        } catch (ErroSistema ex) {
+            throw new ErroSistema("Erro ao inserir lista de convidados no evento!", ex);
+        } catch (SQLException ex) {
+            throw new ErroSistema("Erro ao inserir lista de convidados no evento!(SQLE)", ex);
+        }
+
     }
 }
