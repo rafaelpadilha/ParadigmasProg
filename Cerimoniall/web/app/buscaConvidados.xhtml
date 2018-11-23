@@ -18,12 +18,12 @@
                             <p:outputLabel value="Pesquisar:"></p:outputLabel>
                         </p:column>
                         <p:column>
-                            <p:inputText id="filtrar" style="width: 98%" value="#{eventoController.textoBusca}" onkeydown="#{eventoController.listar()}">
+                            <p:inputText id="filtrar" style="width: 98%" value="#{cEController.textoBusca}" onkeydown="#{cEController.listar()}">
                                 <p:ajax event="keyup" update="@form" ></p:ajax>
                             </p:inputText>
                         </p:column>
                         <p:column>
-                            <p:selectOneMenu style="width: 88%" value="#{eventoController.opBusca}" >
+                            <p:selectOneMenu style="width: 88%" value="#{cEController.opBusca}" >
                                 <f:selectItem itemLabel="Nome" itemValue="NOM_EVENTO" noSelectionOption="true"></f:selectItem>
                                 <f:selectItem itemLabel="Local" itemValue="DSC_LOCAL"></f:selectItem>
                                 <p:ajax update="@form" ></p:ajax>
@@ -32,36 +32,39 @@
                     </p:row>
                     <p:row>
                         <h:form id="dados">
-                            <p:outputLabel value="#{eventoController.listar()}"></p:outputLabel>
+                            <p:outputLabel value="#{cEController.listar()}"></p:outputLabel>
                             <p:column colspan="3">
-                                <p:dataTable var="evento" style="width: 100%" value="#{eventoController.eventos}">
+                                <p:dataTable var="ce" style="width: 100%" value="#{cEController.ces}">
                                     <p:column headerText="Opções">
                                         <p:panelGrid>
                                             <!--OPÇOES-->
                                             <p:row>
                                                 <p:column>
-                                                    <p:commandLink update=":del" oncomplete="PF('delEvento').show()">
+                                                    <p:commandLink update=":del" oncomplete="PF('delCE').show()">
                                                         <h:outputText styleClass="ui-icon ui-icon-close" style="margin:0 auto;" title="Cancelar Cliente"/>
-                                                        <f:setPropertyActionListener value="#{evento}" target="#{eventoController.eventoSelecionada}" />
+                                                        <f:setPropertyActionListener value="#{ce}" target="#{cEController.ceSelec}" />
                                                     </p:commandLink>
                                                 </p:column>
                                             </p:row>
                                         </p:panelGrid>
                                     </p:column>
-                                    <p:column headerText="Nome do Convidado" sortBy="#{evento.nome}">
-                                        <h:outputText value="#{evento.nome}"></h:outputText>
+                                    <p:column headerText="Nome do Convidado" sortBy="#{ce.convidado.nome}">
+                                        <h:outputText value="#{ce.convidado.nome}"></h:outputText>
                                     </p:column>
-                                    <p:column headerText="Evento" sortBy="#{evento.local}">
-                                        <h:outputText value="#{evento.local}"></h:outputText>
+                                    <p:column headerText="Evento" sortBy="#{ce.evento.nome}">
+                                        <h:outputText value="#{ce.evento.nome}"></h:outputText>
                                     </p:column>
-                                    <p:column headerText="Data do evento" sortBy="#{evento.descricao}">
-                                        <h:outputText value="#{evento.descricao}"></h:outputText>
+                                    <p:column headerText="Data do evento" sortBy="#{ce.evento.data}">
+                                        <h:outputText value="#{ce.evento.data}"></h:outputText>
                                     </p:column>
-                                    <p:column headerText="Confirmado" sortBy="#{evento.seqResp}">
-                                        <h:outputText value="#{evento.seqResp}"></h:outputText>
+                                    <p:column headerText="Confirmado" sortBy="#{ce.confirmado}">
+                                        <h:outputText value="#{ce.confirmado}"></h:outputText>
                                     </p:column>
-                                    <p:column headerText="Data de emissão do convite" sortBy="#{evento.data}">
-                                        <h:outputText value="#{evento.data}"></h:outputText>
+                                    <p:column headerText="Data de emissão do convite" sortBy="#{ce.datConvite}">
+                                        <h:outputText value="#{ce.datConvite}"></h:outputText>
+                                    </p:column>
+                                    <p:column headerText="Situação do convite">
+                                        <h:outputText value="#{cEController.getSit(ce.sequencial)}"></h:outputText>
                                     </p:column>
                                 </p:dataTable>
                             </p:column>

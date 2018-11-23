@@ -21,13 +21,23 @@ public class CEController {
     String opBusca = "";
     
     //Dependendo de CEDAO
-    void listar(){
-        /*
+    public void listar(){
         try {
-            setCes(ces);
+            System.out.println("TESTE");
+            this.setCes(cedao.buscar(textoBusca, opBusca));
+            System.out.println(ces);
         } catch (ErroSistema ex) {
             adicionarMensagem(ex.getMessage(), ex.getCause().getMessage(), FacesMessage.SEVERITY_ERROR);
-        }*/
+        }
+        
+    }
+    
+    public void getSit(Integer seq){
+        try {
+            cedao.getSitConvite(seq);
+        } catch (ErroSistema ex) {
+            adicionarMensagem(ex.getMessage(), ex.getCause().getMessage(), FacesMessage.SEVERITY_ERROR);
+        }
         
     }
     

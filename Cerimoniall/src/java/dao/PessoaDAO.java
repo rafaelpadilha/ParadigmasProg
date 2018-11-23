@@ -78,6 +78,40 @@ public class PessoaDAO {
         }
     }
 
+    public Pessoa buscar1(Integer seq) throws ErroSistema {
+        System.out.println("\nJJJJJ\n");
+        Pessoa p = new Pessoa();
+        String sql = "select * from cerimonial.pessoa where flg_ativo = 'S' and seq_pessoa = " + seq.toString();
+        try {
+            Connection conexao = ConnectionFactory.getConexao();
+            PreparedStatement ps = conexao.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                String org;
+                p.setSequencial(rs.getInt("SEQ_PESSOA"));
+                p.setNome(rs.getString("NOM_PESSOA"));
+                p.setCpf(rs.getString("NUM_CPF"));
+                p.setEmail(rs.getString("DSC_EMAIL"));
+                p.setSenha(rs.getString("DSC_SENHA"));
+                org = rs.getString("FLG_ORGANIZADOR");
+                if (org.equals("S")) {
+                    p.setOrganizador(TRUE);
+                } else {
+                    p.setOrganizador(FALSE);
+                }
+                p.setTelefone(rs.getString("NUM_TELEFONE"));
+
+            }
+            ConnectionFactory.fechaConexao();
+
+            return p;
+        } catch (ErroSistema ex) {
+            throw new ErroSistema("Erro ao listar pessoas!", ex);
+        } catch (SQLException ex) {
+            throw new ErroSistema("Erro ao listar pessoas!(SQLE)", ex);
+        }
+    }
+
     public void apagar(Pessoa p) throws ErroSistema {
         String sql = "update pessoa set FLG_ATIVO = 'N' where SEQ_PESSOA = " + p.getSequencial().toString();
         try {
@@ -197,12 +231,46 @@ public class PessoaDAO {
             ps.setInt(1, p.getSequencial());
             ps.setInt(2, Integer.parseInt(e.getSequencial()));
             ps.execute();
+
+            sql = "SELECT LAST_INSERT_ID()";
+            ps = conexao.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                inserirSituacao(rs.getInt(1), "Não enviado.");
+            }
+
             ConnectionFactory.fechaConexao();
         } catch (ErroSistema ex) {
             throw new ErroSistema("Erro ao inserir lista de convidados no evento!", ex);
         } catch (SQLException ex) {
             throw new ErroSistema("Erro ao inserir lista de convidados no evento!(SQLE)", ex);
+        } finally {
+
         }
 
+    }
+
+    public void inserirSituacao(Integer seq, String desc) throws ErroSistema {
+        String sql = "INSERT INTO CERIMONIAL.SITUACAO_CONVITE(\n"
+                + "	SEQ_CONVIDADO_EVENTO,\n"
+                + "	DSC_SITUACAO_CONVITE,\n"
+                + "	DAT_ALTERACAO\n"
+                + ") VALUES(\n"
+                + "	?,\n"
+                + "	?,\n"
+                + "	CURDATE()\n"
+                + ")";
+        try {
+            Connection conexao = ConnectionFactory.getConexao();
+            PreparedStatement ps = conexao.prepareStatement(sql);
+            ps.setInt(1, seq);
+            ps.setString(2, desc);
+            ps.execute();
+            ConnectionFactory.fechaConexao();
+        } catch (ErroSistema ex) {
+            throw new ErroSistema("Erro ao inserir situação!", ex);
+        } catch (SQLException ex) {
+            throw new ErroSistema("Erro ao inserir situação!(SQLE)", ex);
+        }
     }
 }
