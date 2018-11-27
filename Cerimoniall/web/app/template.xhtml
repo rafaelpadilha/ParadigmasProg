@@ -13,17 +13,17 @@
                 <p:menubar>
                     <p:menuitem value="Home" url="index.jsf"></p:menuitem>
                     
-                    <p:submenu  label="Pessoa" style="">
+                    <p:submenu  label="Pessoa" style="" rendered="#{loginController.user.organizador}">
                         <p:menuitem value="Cadastrar Pessoa" url="cadastraPessoa.jsf"></p:menuitem>
                         <p:menuitem value="Buscar Pessoa" url="buscaPessoas.jsf"></p:menuitem>
                     </p:submenu>
                     
-                    <p:submenu  label="Evento" style="">
+                    <p:submenu  label="Evento" style="" rendered="#{loginController.user.organizador}">
                         <p:menuitem value="Cadastrar Evento" url="cadastraEvento.jsf"></p:menuitem>
                         <p:menuitem value="Buscar Eventos" url="buscaEventos.jsf"></p:menuitem>
                     </p:submenu>
                     
-                    <p:submenu  label="Convites" style="">
+                    <p:submenu  label="Convites" style="" rendered="#{loginController.user.organizador}">
                         <p:menuitem value="Listar Convites" url="buscaConvidados.jsf"></p:menuitem>
                     </p:submenu>
                     

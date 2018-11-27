@@ -10,6 +10,7 @@ public class ConvidadoEvento {
     private Evento evento = new Evento();
     private Boolean confirmado;
     private Date datConvite;
+    private String statusConvite;
 
     public Integer getSequencial() {
         return sequencial;
@@ -49,6 +50,14 @@ public class ConvidadoEvento {
 
     public void setDatConvite(Date datConvite) {
         this.datConvite = datConvite;
+    }
+
+    public String getStatusConvite() {
+        return statusConvite;
+    }
+
+    public void setStatusConvite(String statusConvite) {
+        this.statusConvite = statusConvite;
     }
 
     @Override

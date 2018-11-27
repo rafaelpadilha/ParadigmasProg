@@ -79,7 +79,6 @@ public class PessoaDAO {
     }
 
     public Pessoa buscar1(Integer seq) throws ErroSistema {
-        System.out.println("\nJJJJJ\n");
         Pessoa p = new Pessoa();
         String sql = "select * from cerimonial.pessoa where flg_ativo = 'S' and seq_pessoa = " + seq.toString();
         try {
@@ -102,7 +101,7 @@ public class PessoaDAO {
                 p.setTelefone(rs.getString("NUM_TELEFONE"));
 
             }
-            ConnectionFactory.fechaConexao();
+            //ConnectionFactory.fechaConexao();
 
             return p;
         } catch (ErroSistema ex) {

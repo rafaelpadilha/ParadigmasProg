@@ -11,7 +11,7 @@
     <div>
         <h:form>
 
-            <p:fieldset legend="Listar Eventos">
+            <p:fieldset legend="Listar Convidados">
                 <p:panelGrid style="width: 100%" styleClass="ui-noborder">
                     <p:row>
                         <p:column>
@@ -41,7 +41,13 @@
                                             <p:row>
                                                 <p:column>
                                                     <p:commandLink update=":del" oncomplete="PF('delCE').show()">
-                                                        <h:outputText styleClass="ui-icon ui-icon-close" style="margin:0 auto;" title="Cancelar Cliente"/>
+                                                        <h:outputText styleClass="ui-icon ui-icon-close" style="margin:0 auto;" title="Cancelar Convite"/>
+                                                        <f:setPropertyActionListener value="#{ce}" target="#{cEController.ceSelec}" />
+                                                    </p:commandLink>
+                                                </p:column>
+                                                <p:column>
+                                                    <p:commandLink update=":info" oncomplete="PF('infoCE').show()" action="#{cEController.emitir(cEController.ceSelec)}">
+                                                        <h:outputText styleClass="ui-icon ui-icon-check" style="margin:0 auto;" title="Emitir Convite"/>
                                                         <f:setPropertyActionListener value="#{ce}" target="#{cEController.ceSelec}" />
                                                     </p:commandLink>
                                                 </p:column>
@@ -64,7 +70,7 @@
                                         <h:outputText value="#{ce.datConvite}"></h:outputText>
                                     </p:column>
                                     <p:column headerText="Situação do convite">
-                                        <h:outputText value="#{cEController.getSit(ce.sequencial)}"></h:outputText>
+                                        <h:outputText value="#{ce.statusConvite}"></h:outputText>
                                     </p:column>
                                 </p:dataTable>
                             </p:column>
@@ -77,18 +83,35 @@
             </p:fieldset>
         </h:form>
         <h:form id="del">
-            <p:dialog header="Cancelar Evento" widgetVar="delEvento" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+            <p:dialog header="Cancelar Evento" widgetVar="delCE" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:outputText value="Deseja mesmo cancelar a evento:"></h:outputText>
-                <p:outputPanel id="pessoaInfo" rendered="#{not empty eventoController.eventoSelecionada}">
+                <p:outputPanel rendered="#{not empty eventoController.eventoSelecionada}">
                     <p:panelGrid columns="2">
-                        
-                        <p:commandButton value="Confirmar" style="background-color: lightgreen" action="#{eventoController.deletar(eventoController.eventoSelecionada)}" onclick="PF('delEvento').hide();update('@form')"></p:commandButton>
-                        <p:commandButton value="Cancelar" style="background-color: lightcoral" onclick="PF('delEvento').hide()"></p:commandButton>
+                        <h:outputText value="Nome:"/>
+                        <h:outputText value="#{cEController.ceSelec.convidado.nome}"/>
+
+                        <h:outputText value="Evento:"/>
+                        <h:outputText value="#{cEController.ceSelec.evento.nome}"/>
+
+                        <h:outputText value="Situação do convite:"/>
+                        <h:outputText value="#{cEController.ceSelec.statusConvite}"/>
+
+                        <p:commandButton value="Confirmar" style="background-color: lightgreen" action="#{cEController.apagar(cEController.ceSelec)}"  onclick="PF('delCE').hide();update('@form')"></p:commandButton>
+                        <p:commandButton value="Cancelar" style="background-color: lightcoral" onclick="PF('delCE').hide()"></p:commandButton>
                     </p:panelGrid>
                 </p:outputPanel>
             </p:dialog>
         </h:form>
-        
+        <h:form id="info">
+            <p:dialog header="Convite Emitido" widgetVar="infoCE" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel rendered="#{not empty eventoController.eventoSelecionada}">
+                    <p:panelGrid columns="1">
+                        <p:commandButton value="Ok" style="background-color: lightgreen"  onclick="PF('delCE').hide();update('@form')"></p:commandButton>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
     </div>
 </ui:decorate>
 

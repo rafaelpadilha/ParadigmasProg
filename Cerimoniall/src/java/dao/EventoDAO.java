@@ -109,7 +109,7 @@ public class EventoDAO {
                 e.setData(rs.getDate("DAT_EVENTO"));
             }
 
-            ConnectionFactory.fechaConexao();
+            //ConnectionFactory.fechaConexao();
             return e;
         } catch (ErroSistema ex) {
             throw new ErroSistema("Erro ao listar eventos!", ex);

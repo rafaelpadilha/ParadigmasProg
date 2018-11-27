@@ -1,6 +1,7 @@
 package beans;
 
 import dao.LoginDAO;
+import dao.PessoaDAO;
 import java.io.Serializable;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -8,6 +9,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 import model.Login;
+import model.Pessoa;
 import util.exception.ErroSistema;
 
 @ManagedBean
@@ -16,10 +18,13 @@ public class LoginController implements Serializable{
 
     private Login login = new Login();
     private LoginDAO ldao = new LoginDAO();
+    private PessoaDAO pdao = new PessoaDAO();
+    private Pessoa user;
 
     public String logar() {
         try {
             if (ldao.autenticar(login) == 1) {
+                user = pdao.buscar1(ldao.getSeqUsr(login));
                 HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
                 session.setAttribute("usuario", login);
                 return "/app/index?faces-redirect=true";
@@ -54,6 +59,14 @@ public class LoginController implements Serializable{
 
     public void setLdao(LoginDAO ldao) {
         this.ldao = ldao;
+    }
+
+    public Pessoa getUser() {
+        return user;
+    }
+
+    public void setUser(Pessoa user) {
+        this.user = user;
     }
 
     public void adicionarMensagem(String sumario, String detalhe, FacesMessage.Severity tipoErro) {

@@ -1,6 +1,7 @@
 package beans;
 
 import dao.CEDAO;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.application.FacesMessage;
@@ -12,7 +13,7 @@ import util.exception.ErroSistema;
 
 @ManagedBean
 @SessionScoped
-public class CEController {
+public class CEController implements Serializable{
     private ConvidadoEvento ce = new ConvidadoEvento();
     private CEDAO cedao = new CEDAO();
     private List<ConvidadoEvento> ces = new ArrayList<>();
@@ -23,9 +24,7 @@ public class CEController {
     //Dependendo de CEDAO
     public void listar(){
         try {
-            System.out.println("TESTE");
             this.setCes(cedao.buscar(textoBusca, opBusca));
-            System.out.println(ces);
         } catch (ErroSistema ex) {
             adicionarMensagem(ex.getMessage(), ex.getCause().getMessage(), FacesMessage.SEVERITY_ERROR);
         }
@@ -39,6 +38,23 @@ public class CEController {
             adicionarMensagem(ex.getMessage(), ex.getCause().getMessage(), FacesMessage.SEVERITY_ERROR);
         }
         
+    }
+    
+    public void apagar(ConvidadoEvento ce){
+        try {
+            cedao.apagar(ce);
+        } catch (ErroSistema ex) {
+            adicionarMensagem(ex.getMessage(), ex.getCause().getMessage(), FacesMessage.SEVERITY_ERROR);
+        }
+        
+    }
+    
+    public void emitir(ConvidadoEvento ce){
+        try {
+            cedao.emitirConvite(ce);
+        } catch (ErroSistema ex) {
+            adicionarMensagem(ex.getMessage(), ex.getCause().getMessage(), FacesMessage.SEVERITY_ERROR);
+        }
     }
     
     public void adicionarMensagem(String sumario, String detalhe, FacesMessage.Severity tipoErro) {
