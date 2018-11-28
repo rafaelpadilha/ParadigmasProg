@@ -1,15 +1,18 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Pessoa {
-    Integer sequencial;
-    String nome;
-    String cpf;
-    String email;
-    String senha;
-    Boolean organizador = false;
-    String telefone;
+    private Integer sequencial;
+    private String nome;
+    private String cpf;
+    private String email;
+    private String senha;
+    private Boolean organizador = false;
+    private String telefone;
+    private List<ConvidadoEvento> convites = new ArrayList<>();
 
     public Integer getSequencial() {
         return sequencial;
@@ -65,6 +68,14 @@ public class Pessoa {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public List<ConvidadoEvento> getConvites() {
+        return convites;
+    }
+
+    public void setConvites(List<ConvidadoEvento> convites) {
+        this.convites = convites;
     }
 
     @Override

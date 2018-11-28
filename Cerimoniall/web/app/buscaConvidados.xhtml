@@ -14,23 +14,6 @@
             <p:fieldset legend="Listar Convidados">
                 <p:panelGrid style="width: 100%" styleClass="ui-noborder">
                     <p:row>
-                        <p:column>
-                            <p:outputLabel value="Pesquisar:"></p:outputLabel>
-                        </p:column>
-                        <p:column>
-                            <p:inputText id="filtrar" style="width: 98%" value="#{cEController.textoBusca}" onkeydown="#{cEController.listar()}">
-                                <p:ajax event="keyup" update="@form" ></p:ajax>
-                            </p:inputText>
-                        </p:column>
-                        <p:column>
-                            <p:selectOneMenu style="width: 88%" value="#{cEController.opBusca}" >
-                                <f:selectItem itemLabel="Nome" itemValue="NOM_EVENTO" noSelectionOption="true"></f:selectItem>
-                                <f:selectItem itemLabel="Local" itemValue="DSC_LOCAL"></f:selectItem>
-                                <p:ajax update="@form" ></p:ajax>
-                            </p:selectOneMenu>
-                        </p:column>
-                    </p:row>
-                    <p:row>
                         <h:form id="dados">
                             <p:outputLabel value="#{cEController.listar()}"></p:outputLabel>
                             <p:column colspan="3">

@@ -1,5 +1,6 @@
 package beans;
 
+import dao.CEDAO;
 import dao.LoginDAO;
 import dao.PessoaDAO;
 import java.io.Serializable;
@@ -19,7 +20,7 @@ public class LoginController implements Serializable{
     private Login login = new Login();
     private LoginDAO ldao = new LoginDAO();
     private PessoaDAO pdao = new PessoaDAO();
-    private Pessoa user;
+    private Pessoa user = new Pessoa();
 
     public String logar() {
         try {
@@ -37,6 +38,15 @@ public class LoginController implements Serializable{
             adicionarMensagem(ex.getMessage(), ex.getCause().getMessage(), FacesMessage.SEVERITY_ERROR);
         }
         return "";
+    }
+    
+    public void busca_convites(){
+        CEDAO cedao = new CEDAO();
+        try {
+            this.user.setConvites(cedao.buscar_convites(user));
+        } catch (ErroSistema ex) {
+            adicionarMensagem(ex.getMessage(), ex.getCause().getMessage(), FacesMessage.SEVERITY_ERROR);
+        }
     }
     
     public String logout(){

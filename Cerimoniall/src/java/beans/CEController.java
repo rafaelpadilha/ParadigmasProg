@@ -57,6 +57,22 @@ public class CEController implements Serializable{
         }
     }
     
+    public void aceitar(ConvidadoEvento ce){
+        try {
+            cedao.aceitar(ce);
+        } catch (ErroSistema ex) {
+            adicionarMensagem(ex.getMessage(), ex.getCause().getMessage(), FacesMessage.SEVERITY_ERROR);
+        }
+    }
+    
+    public void recusar(ConvidadoEvento ce){
+        try {
+            cedao.recusar(ce);
+        } catch (ErroSistema ex) {
+            adicionarMensagem(ex.getMessage(), ex.getCause().getMessage(), FacesMessage.SEVERITY_ERROR);
+        }
+    }
+    
     public void adicionarMensagem(String sumario, String detalhe, FacesMessage.Severity tipoErro) {
         FacesContext contex = FacesContext.getCurrentInstance();
         FacesMessage mensage = new FacesMessage(tipoErro, sumario, detalhe);

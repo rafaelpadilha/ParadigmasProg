@@ -9,16 +9,74 @@
 
     <h1 style="color: white">Bem vindo #{loginController.user.nome}!</h1>
 
-    
+
     <div>
         <h:form>
+            <p:fieldset legend="Lista de Convites">
+                <p:panelGrid style="width: 100%" styleClass="ui-noborder">
+                    <p:row>
+                        <h:form id="dados">
+                            <p:outputLabel value="#{loginController.busca_convites()}"></p:outputLabel>
+                            <p:column colspan="3">
+                                <p:dataTable var="ce" style="width: 100%" value="#{loginController.user.convites}">
+                                    <p:column headerText="Opções">
+                                        <p:panelGrid>
+                                            <!--OPÇOES-->
+                                            <p:row>
 
-            <p:fieldset legend="Convites para Eventos">
+                                                <p:column>
+                                                    <p:commandLink update=":no" oncomplete="PF('naoCE').show()" action="#{cEController.recusar(cEController.ceSelec)}">
+                                                        <h:outputText styleClass="ui-icon ui-icon-close" style="margin:0 auto;" title="Recusar Convite"/>
+                                                        <f:setPropertyActionListener value="#{ce}" target="#{cEController.ceSelec}" />
+                                                    </p:commandLink>
+                                                </p:column>
+                                                <p:column>
+                                                    <p:commandLink update=":yes" oncomplete="PF('simCE').show()" action="#{cEController.aceitar(cEController.ceSelec)}">
+                                                        <h:outputText styleClass="ui-icon ui-icon-check" style="margin:0 auto;" title="Aceitar Convite"/>
+                                                        <f:setPropertyActionListener value="#{ce}" target="#{cEController.ceSelec}" />
+                                                    </p:commandLink>
+                                                </p:column>
 
+                                            </p:row>
+                                        </p:panelGrid>
+                                    </p:column>
+                                    <p:column headerText="Evento" sortBy="#{ce.evento.nome}">
+                                        <h:outputText value="#{ce.evento.nome}"></h:outputText>
+                                    </p:column>
+                                    <p:column headerText="Local" sortBy="#{ce.evento.nome}">
+                                        <h:outputText value="#{ce.evento.local}"></h:outputText>
+                                    </p:column>
+                                    <p:column headerText="Descrição" sortBy="#{ce.evento.nome}">
+                                        <h:outputText value="#{ce.evento.descricao}"></h:outputText>
+                                    </p:column>
+                                    <p:column headerText="Data" sortBy="#{ce.evento.data}">
+                                        <h:outputText value="#{ce.evento.data}"></h:outputText>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:column>
+                        </h:form>
+                    </p:row>
+                </p:panelGrid>
             </p:fieldset>
-
         </h:form>
-
+        <h:form id="no">
+            <p:dialog header="Convite Recusado" widgetVar="naoCE" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel>
+                    <p:panelGrid columns="1">
+                        <p:commandButton value="Ok" style="background-color: lightgreen"  onclick="PF('naoCE').hide();update('@form')"></p:commandButton>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+        <h:form id="yes">
+            <p:dialog header="Convite Aceito" widgetVar="simCE" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel>
+                    <p:panelGrid columns="1">
+                        <p:commandButton value="Ok" style="background-color: lightgreen"  onclick="PF('simCE').hide();update('@form')"></p:commandButton>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
     </div>
 
 

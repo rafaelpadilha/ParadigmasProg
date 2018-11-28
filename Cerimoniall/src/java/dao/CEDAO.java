@@ -51,12 +51,12 @@ public class CEDAO {
                 String org;
                 Evento tmp_e;
                 Pessoa tmp_p;
-                
+
                 ce.setSequencial(rs.getInt("CE.SEQ_CONVIDADO_EVENTO"));
 
                 tmp_p = pdao.buscar1(rs.getInt("CE.SEQ_PESSOA"));
                 ce.setConvidado(tmp_p);
-                
+
                 tmp_e = edao.buscar1(rs.getInt("CE.SEQ_EVENTO"));
                 ce.setEvento(tmp_e);
 
@@ -68,9 +68,9 @@ public class CEDAO {
                 }
 
                 ce.setDatConvite(rs.getDate("CE.DAT_CONVITE_EMITIDO"));
-                
+
                 ce.setStatusConvite(getSitConvite(ce.getSequencial()));
-                
+
                 ces.add(ce);
             }
             ConnectionFactory.fechaConexao();
@@ -85,17 +85,16 @@ public class CEDAO {
     public String getSitConvite(Integer seq) throws ErroSistema {
         String sql = "SELECT DSC_SITUACAO_CONVITE FROM CERIMONIAL.SITUACAO_CONVITE WHERE SEQ_CONVIDADO_EVENTO = "
                 + seq.toString() + " ORDER BY SEQ_SITUACAO_CONVITE DESC";
-        
+
         try {
             Connection conexao = ConnectionFactory.getConexao();
             PreparedStatement ps = conexao.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
-            System.out.println(sql);
             if (rs.next()) {
                 String ret = rs.getString(1);
                 return ret;
             }
-            
+
         } catch (ErroSistema ex) {
             throw new ErroSistema("Erro ao listar eventos!", ex);
         } catch (SQLException ex) {
@@ -103,27 +102,118 @@ public class CEDAO {
         }
         return null;
     }
-    
-    public void apagar(ConvidadoEvento ce)throws ErroSistema{
-        try{
+
+    public void apagar(ConvidadoEvento ce) throws ErroSistema {
+        try {
             pdao.cancelaConvidado(ce.getConvidado(), ce.getEvento());
-        }catch (ErroSistema ex) {
+        } catch (ErroSistema ex) {
             throw new ErroSistema("Erro ao apagar convidado!", ex);
         }
     }
-    
-    public void emitirConvite(ConvidadoEvento ce)throws ErroSistema{
+
+    public void emitirConvite(ConvidadoEvento ce) throws ErroSistema {
         String sql = "UPDATE CERIMONIAL.CONVIDADO_EVENTO SET DAT_CONVITE_EMITIDO = CURDATE() WHERE SEQ_CONVIDADO_EVENTO = " + ce.getSequencial().toString();
-        try{
+        try {
             Connection conexao = ConnectionFactory.getConexao();
             PreparedStatement ps = conexao.prepareStatement(sql);
             ps.execute();
             pdao.inserirSituacao(ce.getSequencial(), "Convite Emitido.");
-            System.out.println("QQQQ");
             ConnectionFactory.fechaConexao();
-        }catch (ErroSistema ex) {
+        } catch (ErroSistema ex) {
             throw new ErroSistema("Erro ao emitir convite!", ex);
-        }catch (SQLException ex) {
+        } catch (SQLException ex) {
+            throw new ErroSistema("Erro ao listar eventos!(SQLE)", ex);
+        }
+    }
+
+    public List<ConvidadoEvento> buscar_convites(Pessoa p) throws ErroSistema {
+        List<ConvidadoEvento> ces = new ArrayList<>();
+        String sql = "SELECT \n"
+                + "CE.SEQ_CONVIDADO_EVENTO,\n"
+                + "CE.SEQ_PESSOA,\n"
+                + "CE.SEQ_EVENTO,\n"
+                + "CE.FLG_CONFIRMADO,\n"
+                + "CE.DAT_CONVITE_EMITIDO\n"
+                + "FROM CERIMONIAL.CONVIDADO_EVENTO CE\n"
+                + "WHERE CE.FLG_ATIVO = 'S' AND CE.SEQ_PESSOA = " + p.getSequencial().toString()
+                + " AND CE.DAT_CONVITE_EMITIDO IS NOT NULL "
+                + "AND CE.FLG_CONFIRMADO = 'N'";
+        try {
+            Connection conexao = ConnectionFactory.getConexao();
+            PreparedStatement ps = conexao.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ConvidadoEvento ce = new ConvidadoEvento();
+                String org;
+                Evento tmp_e;
+                Pessoa tmp_p;
+
+                ce.setSequencial(rs.getInt("CE.SEQ_CONVIDADO_EVENTO"));
+
+                tmp_p = pdao.buscar1(rs.getInt("CE.SEQ_PESSOA"));
+                ce.setConvidado(tmp_p);
+
+                tmp_e = edao.buscar1(rs.getInt("CE.SEQ_EVENTO"));
+                ce.setEvento(tmp_e);
+
+                org = rs.getString("CE.FLG_CONFIRMADO");
+                if (org.equals("S")) {
+                    ce.setConfirmado(TRUE);
+                } else {
+                    ce.setConfirmado(FALSE);
+                }
+
+                ce.setDatConvite(rs.getDate("CE.DAT_CONVITE_EMITIDO"));
+
+                ce.setStatusConvite(getSitConvite(ce.getSequencial()));
+
+                ces.add(ce);
+            }
+            ConnectionFactory.fechaConexao();
+            return ces;
+        } catch (ErroSistema ex) {
+            throw new ErroSistema("Erro ao listar eventos!", ex);
+        } catch (SQLException ex) {
+            throw new ErroSistema("Erro ao listar eventos!(SQLE)", ex);
+        }
+
+    }
+
+    public void aceitar(ConvidadoEvento ce) throws ErroSistema{
+        String sql;
+        System.out.println("TESTEEE");
+        try {
+            Connection conexao = ConnectionFactory.getConexao();
+            sql = "INSERT INTO CERIMONIAL.SITUACAO_CONVITE(SEQ_CONVIDADO_EVENTO,DSC_SITUACAO_CONVITE,DAT_ALTERACAO) VALUES(?,'Convite Aceito',CURDATE())";
+            PreparedStatement ps = conexao.prepareStatement(sql);
+            ps.setInt(1, ce.getSequencial());
+            ps.execute();
+            sql = "UPDATE CERIMONIAL.CONVIDADO_EVENTO SET FLG_CONFIRMADO = 'S' WHERE SEQ_CONVIDADO_EVENTO = " + ce.getSequencial().toString();
+            ps = conexao.prepareStatement(sql);
+            ps.execute();
+            ConnectionFactory.fechaConexao();
+        } catch (ErroSistema ex) {
+            throw new ErroSistema("Erro ao listar eventos!", ex);
+        } catch (SQLException ex) {
+            throw new ErroSistema("Erro ao listar eventos!(SQLE)", ex);
+        }
+    }
+    
+    public void recusar(ConvidadoEvento ce) throws ErroSistema{
+        String sql;
+        try {
+            Connection conexao = ConnectionFactory.getConexao();
+            sql = "INSERT INTO CERIMONIAL.SITUACAO_CONVITE(SEQ_CONVIDADO_EVENTO,DSC_SITUACAO_CONVITE,DAT_ALTERACAO) VALUES(?,'Convite Recusado',CURDATE())";
+            PreparedStatement ps = conexao.prepareStatement(sql);
+            ps.setInt(1, ce.getSequencial());
+            ps.execute();
+            sql = "UPDATE CERIMONIAL.CONVIDADO_EVENTO SET FLG_CONFIRMADO = 'S' WHERE SEQ_CONVIDADO_EVENTO = " + ce.getSequencial().toString();
+            ps = conexao.prepareStatement(sql);
+            ps.execute();
+            ConnectionFactory.fechaConexao();
+        } catch (ErroSistema ex) {
+            throw new ErroSistema("Erro ao listar eventos!", ex);
+        } catch (SQLException ex) {
             throw new ErroSistema("Erro ao listar eventos!(SQLE)", ex);
         }
     }
